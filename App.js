@@ -26,6 +26,7 @@ export default function App() {
       {pagina === 'frameworks' && <FrameworkScreen voltar={voltar} />}
       {pagina === 'apis' && <APIsScreen voltar={voltar} />}
       {pagina === 'bancodedados' && <BancoDeDadosScreen voltar={voltar} />}
+      {pagina === 'softskills' && <SoftSkillsScreen voltar={voltar} />}
     </View>
   );
 }
@@ -43,8 +44,8 @@ function LoginScreen({ navegarPara }) {
     <View style={styles.formContainer}>
       <Text style={styles.title}>Bem-vindo ao DevConect</Text>
       <Text style={styles.subtitle}>Faça login para acessar os cursos!</Text>
-      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#ccc" />
-      <TextInput style={styles.input} placeholder="Senha" placeholderTextColor="#ccc" secureTextEntry />
+      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#A68FFF" />
+      <TextInput style={styles.input} placeholder="Senha" placeholderTextColor="#A68FFF" secureTextEntry />
       <TouchableOpacity style={styles.button} onPress={() => navegarPara('desenvolvimento')}>
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
@@ -60,8 +61,8 @@ function CadastroScreen({ navegarPara, voltar }) {
     <View style={styles.formContainer}>
       <VoltarButton voltar={voltar} />
       <Text style={styles.title}>Cadastro</Text>
-      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#ccc" />
-      <TextInput style={styles.input} placeholder="Senha" placeholderTextColor="#ccc" secureTextEntry />
+      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#A68FFF" />
+      <TextInput style={styles.input} placeholder="Senha" placeholderTextColor="#A68FFF" secureTextEntry />
       <TouchableOpacity style={styles.button} onPress={() => navegarPara('login')}>
         <Text style={styles.buttonText}>Cadastrar</Text>
       </TouchableOpacity>
@@ -86,6 +87,10 @@ function DesenvolvimentoScreen({ navegarPara, voltar }) {
       <TouchableOpacity style={styles.card} onPress={() => navegarPara('bancodedados')}>
         <Text style={styles.cardTitle}>Banco de Dados</Text>
         <Text style={styles.cardDesc}>Entenda como armazenar, consultar e proteger informações em diferentes tipos de bancos.</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.card} onPress={() => navegarPara('softskills')}>
+        <Text style={styles.cardTitle}>Soft Skills</Text>
+        <Text style={styles.cardDesc}>Desenvolva habilidades essenciais como comunicação, gestão de tempo e trabalho em equipe.</Text>
       </TouchableOpacity>
     </View>
   );
@@ -230,17 +235,65 @@ function BancoDeDadosScreen({ voltar }) {
   );
 }
 
+function SoftSkillsScreen({ voltar }) {
+  return (
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      <VoltarButton voltar={voltar} />
+      <Text style={styles.devTitle}>Soft Skills</Text>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>O que são Soft Skills?</Text>
+        <Text style={styles.courseText}>
+          Soft Skills são habilidades comportamentais e interpessoais essenciais para o sucesso profissional e pessoal. Elas complementam os conhecimentos técnicos (hard skills) e são cada vez mais valorizadas no mercado de trabalho.
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Comunicação Eficaz</Text>
+        <Text style={styles.courseText}>
+          Saber se expressar de forma clara, ouvir ativamente e adaptar a comunicação ao público são pontos-chave. Uma boa comunicação evita conflitos, melhora o trabalho em equipe e aumenta a produtividade.
+        </Text>
+        <Text style={styles.courseTip}>
+          Dica: Pratique feedbacks construtivos e esteja aberto a ouvir opiniões diferentes.
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Gestão de Tempo</Text>
+        <Text style={styles.courseText}>
+          Organizar tarefas, definir prioridades e evitar procrastinação são fundamentais para entregar resultados no prazo e com qualidade. Técnicas como Pomodoro e uso de listas ajudam bastante.
+        </Text>
+        <Text style={styles.courseTip}>
+          Dica: Use ferramentas como agendas, aplicativos de tarefas e estabeleça metas diárias.
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Trabalho em Equipe</Text>
+        <Text style={styles.courseText}>
+          Colaborar, respeitar opiniões, dividir responsabilidades e ajudar colegas são atitudes que fortalecem o grupo e levam a melhores resultados.
+        </Text>
+        <Text style={styles.courseTip}>
+          Dica: Compartilhe conhecimento, celebre conquistas coletivas e esteja disposto a ajudar.
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Por que desenvolver Soft Skills?</Text>
+        <Text style={styles.courseText}>
+          Profissionais com boas soft skills se destacam, têm mais facilidade para liderar, resolver problemas e crescer na carreira.
+        </Text>
+      </View>
+    </ScrollView>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#181c2f',
+    backgroundColor: '#000',
     justifyContent: 'center',
   },
   formContainer: {
     flex: 1,
     justifyContent: 'center',
     padding: 30,
-    backgroundColor: '#23284d',
+    backgroundColor: '#181c2f',
     borderRadius: 16,
     margin: 20,
     elevation: 8,
@@ -250,20 +303,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    color: '#fff',
+    color: '#A1EBF5',
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#b0b8d1',
+    color: '#A68FFF',
     marginBottom: 25,
     textAlign: 'center',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#3a4067',
+    borderColor: '#A68FFF',
     borderRadius: 8,
     padding: 12,
     color: '#fff',
@@ -271,7 +324,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#23284d',
   },
   button: {
-    backgroundColor: '#4f8cff',
+    backgroundColor: '#A68FFF',
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -279,19 +332,19 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonText: {
-    color: '#fff',
+    color: '#000',
     fontWeight: 'bold',
     fontSize: 16,
   },
   linkText: {
     marginTop: 18,
-    color: '#b0b8d1',
+    color: '#A1EBF5',
     textAlign: 'center',
     textDecorationLine: 'underline',
   },
   voltarButton: {
     alignSelf: 'flex-start',
-    backgroundColor: '#23284d',
+    backgroundColor: '#181c2f',
     paddingVertical: 6,
     paddingHorizontal: 18,
     borderRadius: 20,
@@ -301,7 +354,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   voltarButtonText: {
-    color: '#4f8cff',
+    color: '#A1EBF5',
     fontWeight: 'bold',
     fontSize: 16,
   },
@@ -309,23 +362,23 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     alignItems: 'center',
-    backgroundColor: '#23284d',
+    backgroundColor: '#181c2f',
   },
   devTitle: {
     fontSize: 26,
-    color: '#fff',
+    color: '#A1EBF5',
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
   },
   devSubtitle: {
     fontSize: 16,
-    color: '#b0b8d1',
+    color: '#A68FFF',
     marginBottom: 18,
     textAlign: 'center',
   },
   card: {
-    backgroundColor: '#2d325a',
+    backgroundColor: '#23284d',
     padding: 18,
     borderRadius: 14,
     marginVertical: 10,
@@ -336,22 +389,22 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
   },
   cardTitle: {
-    color: '#4f8cff',
+    color: '#A68FFF',
     fontWeight: 'bold',
     fontSize: 20,
     marginBottom: 6,
   },
   cardDesc: {
-    color: '#b0b8d1',
+    color: '#A1EBF5',
     fontSize: 15,
   },
   scrollContent: {
     padding: 20,
-    backgroundColor: '#23284d',
+    backgroundColor: '#181c2f',
     minHeight: '100%',
   },
   courseCard: {
-    backgroundColor: '#2d325a',
+    backgroundColor: '#23284d',
     borderRadius: 14,
     padding: 18,
     marginBottom: 16,
@@ -361,18 +414,24 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   courseTitle: {
-    color: '#4f8cff',
+    color: '#A68FFF',
     fontWeight: 'bold',
     fontSize: 18,
     marginBottom: 6,
   },
   courseText: {
-    color: '#e0e6f7',
+    color: '#A1EBF5',
     fontSize: 15,
     lineHeight: 22,
   },
+  courseTip: {
+    color: '#A1EBF5',
+    fontSize: 14,
+    marginTop: 8,
+    fontStyle: 'italic',
+  },
   bold: {
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#A1EBF5',
   },
 });
