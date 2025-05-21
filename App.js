@@ -1,146 +1,378 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
 export default function App() {
   const [pagina, setPagina] = useState('login');
   const [historico, setHistorico] = useState([]);
 
-  function navegarPara(novaPagina) {
-    setHistorico([...historico, pagina]);
+  const navegarPara = (novaPagina) => {
+    setHistorico((prev) => (pagina !== 'login' ? [...prev, pagina] : prev));
     setPagina(novaPagina);
-  }
+  };
 
-  function voltar() {
+  const voltar = () => {
     if (historico.length > 0) {
-      const ultimaPagina = historico.pop();
-      setPagina(ultimaPagina);
-      setHistorico([...historico]); // Atualiza o histórico
+      const anterior = historico[historico.length - 1];
+      setHistorico((prev) => prev.slice(0, -1));
+      setPagina(anterior);
     }
-  }
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      {pagina !== 'login' && <BotaoVoltar onPress={voltar} />}
-      
-      {pagina === 'login' && <LoginScreen onLogin={() => navegarPara('home')} onIrParaCadastro={() => navegarPara('cadastro')} />}
-      {pagina === 'cadastro' && <CadastroScreen onCadastroConcluido={() => navegarPara('login')} />}
-      {pagina === 'home' && <HomeScreen onIrParaDesenvolvimento={() => navegarPara('desenvolvimento')} />}
-      {pagina === 'desenvolvimento' && <DesenvolvimentoScreen />}
-    </SafeAreaView>
+    <View style={styles.container}>
+      {pagina === 'login' && <LoginScreen navegarPara={navegarPara} />}
+      {pagina === 'cadastro' && <CadastroScreen navegarPara={navegarPara} voltar={voltar} />}
+      {pagina === 'desenvolvimento' && <DesenvolvimentoScreen navegarPara={navegarPara} voltar={voltar} />}
+      {pagina === 'frameworks' && <FrameworkScreen voltar={voltar} />}
+      {pagina === 'apis' && <APIsScreen voltar={voltar} />}
+      {pagina === 'bancodedados' && <BancoDeDadosScreen voltar={voltar} />}
+    </View>
   );
 }
 
-function BotaoVoltar({ onPress }) {
+function VoltarButton({ voltar }) {
   return (
-    <TouchableOpacity style={styles.voltarButton} onPress={onPress}>
-      <Text style={styles.voltarButtonText}>⬅ Voltar</Text>
+    <TouchableOpacity style={styles.voltarButton} onPress={voltar}>
+      <Text style={styles.voltarButtonText}>← Voltar</Text>
     </TouchableOpacity>
   );
 }
 
-function LoginScreen({ onLogin, onIrParaCadastro }) {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-
+function LoginScreen({ navegarPara }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#E0E0E0" value={email} onChangeText={setEmail} />
-      <TextInput style={styles.input} placeholder="Senha" placeholderTextColor="#E0E0E0" secureTextEntry value={senha} onChangeText={setSenha} />
-      <TouchableOpacity style={styles.button} onPress={onLogin}>
-        <Text style={styles.buttonText}>Acessar</Text>
+    <View style={styles.formContainer}>
+      <Text style={styles.title}>Bem-vindo ao DevConect</Text>
+      <Text style={styles.subtitle}>Faça login para acessar os cursos!</Text>
+      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#ccc" />
+      <TextInput style={styles.input} placeholder="Senha" placeholderTextColor="#ccc" secureTextEntry />
+      <TouchableOpacity style={styles.button} onPress={() => navegarPara('desenvolvimento')}>
+        <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={onIrParaCadastro}>
-        <Text style={styles.linkText}>Não tem uma conta? Cadastre-se</Text>
+      <TouchableOpacity onPress={() => navegarPara('cadastro')}>
+        <Text style={styles.linkText}>Não tem conta? Cadastre-se</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-function CadastroScreen({ onCadastroConcluido }) {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-
+function CadastroScreen({ navegarPara, voltar }) {
   return (
-    <View style={styles.container}>
+    <View style={styles.formContainer}>
+      <VoltarButton voltar={voltar} />
       <Text style={styles.title}>Cadastro</Text>
-      <TextInput style={styles.input} placeholder="Nome completo" placeholderTextColor="#E0E0E0" value={nome} onChangeText={setNome} />
-      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#E0E0E0" value={email} onChangeText={setEmail} />
-      <TextInput style={styles.input} placeholder="Senha" placeholderTextColor="#E0E0E0" secureTextEntry value={senha} onChangeText={setSenha} />
-      <TouchableOpacity style={styles.button} onPress={onCadastroConcluido}>
+      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#ccc" />
+      <TextInput style={styles.input} placeholder="Senha" placeholderTextColor="#ccc" secureTextEntry />
+      <TouchableOpacity style={styles.button} onPress={() => navegarPara('login')}>
         <Text style={styles.buttonText}>Cadastrar</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-function HomeScreen({ onIrParaDesenvolvimento }) {
+function DesenvolvimentoScreen({ navegarPara, voltar }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Bem-vindo ao DevConect</Text>
-      <TouchableOpacity style={styles.card} onPress={onIrParaDesenvolvimento}>
-        <Text style={styles.cardText}>Desenvolvimento</Text>
+    <View style={styles.devContainer}>
+      <VoltarButton voltar={voltar} />
+      <Text style={styles.devTitle}>Área de Desenvolvimento</Text>
+      <Text style={styles.devSubtitle}>Escolha um curso para aprender mais:</Text>
+      <TouchableOpacity style={styles.card} onPress={() => navegarPara('frameworks')}>
+        <Text style={styles.cardTitle}>Frameworks</Text>
+        <Text style={styles.cardDesc}>Aprenda sobre as principais ferramentas para acelerar o desenvolvimento web e mobile.</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.card}>
-        <Text style={styles.cardText}>Softskills</Text>
+      <TouchableOpacity style={styles.card} onPress={() => navegarPara('apis')}>
+        <Text style={styles.cardTitle}>APIs</Text>
+        <Text style={styles.cardDesc}>Descubra como integrar sistemas e consumir dados de forma eficiente e segura.</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.card}>
-        <Text style={styles.cardText}>Outros (Indisponível)</Text>
+      <TouchableOpacity style={styles.card} onPress={() => navegarPara('bancodedados')}>
+        <Text style={styles.cardTitle}>Banco de Dados</Text>
+        <Text style={styles.cardDesc}>Entenda como armazenar, consultar e proteger informações em diferentes tipos de bancos.</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-function DesenvolvimentoScreen() {
+function FrameworkScreen({ voltar }) {
   return (
-    <View style={styles.devContainer}>
-      <Text style={styles.devTitle}>Área de Desenvolvimento</Text>
-      <Text style={styles.devSubtitle}>Aprenda mais sobre tecnologia!</Text>
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      <VoltarButton voltar={voltar} />
+      <Text style={styles.devTitle}>Frameworks</Text>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>O que são Frameworks?</Text>
+        <Text style={styles.courseText}>
+          Frameworks são conjuntos de ferramentas, bibliotecas e padrões que facilitam e aceleram o desenvolvimento de aplicações. Eles fornecem uma estrutura pronta para o código, promovendo organização e reutilização.
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Exemplos Populares</Text>
+        <Text style={styles.courseText}>
+          <Text style={styles.bold}>Front-end:</Text> React, Angular, Vue.js{"\n"}
+          <Text style={styles.bold}>Back-end:</Text> Django (Python), Laravel (PHP), Spring Boot (Java), Express (Node.js)
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Vantagens</Text>
+        <Text style={styles.courseText}>
+          • Redução do tempo de desenvolvimento{"\n"}
+          • Manutenção facilitada{"\n"}
+          • Padrões de projeto e segurança{"\n"}
+          • Comunidade ativa e documentação
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Desvantagens</Text>
+        <Text style={styles.courseText}>
+          • Curva de aprendizado{"\n"}
+          • Limitações impostas pelo framework{"\n"}
+          • Atualizações frequentes podem exigir adaptações
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Dicas</Text>
+        <Text style={styles.courseText}>
+          Escolha frameworks de acordo com o tipo de projeto, comunidade ativa, documentação e experiência da equipe.
+        </Text>
+      </View>
+    </ScrollView>
+  );
+}
 
-      <TouchableOpacity style={styles.devButton}>
-        <Text style={styles.devButtonText}>Frameworks</Text>
-      </TouchableOpacity>
+function APIsScreen({ voltar }) {
+  return (
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      <VoltarButton voltar={voltar} />
+      <Text style={styles.devTitle}>APIs</Text>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>O que são APIs?</Text>
+        <Text style={styles.courseText}>
+          APIs (Application Programming Interfaces) são conjuntos de regras que permitem que diferentes sistemas se comuniquem, trocando dados e funcionalidades.
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Tipos de APIs</Text>
+        <Text style={styles.courseText}>
+          • REST: Baseada em HTTP, simples e muito utilizada.{"\n"}
+          • SOAP: Baseada em XML, mais rígida, comum em sistemas corporativos.{"\n"}
+          • GraphQL: Consultas flexíveis, retorna apenas os dados necessários.
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Ferramentas e Exemplos</Text>
+        <Text style={styles.courseText}>
+          • Postman (testes de APIs){"\n"}
+          • Swagger (documentação){"\n"}
+          • Consumo de dados de clima, redes sociais, pagamentos online, mapas, etc.
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Boas Práticas</Text>
+        <Text style={styles.courseText}>
+          Sempre leia a documentação da API, atente-se à autenticação, limites de uso (rate limit) e segurança dos dados.
+        </Text>
+      </View>
+    </ScrollView>
+  );
+}
 
-      <TouchableOpacity style={styles.devButton}>
-        <Text style={styles.devButtonText}>APIs</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.devButton}>
-        <Text style={styles.devButtonText}>Banco de Dados</Text>
-      </TouchableOpacity>
-    </View>
+function BancoDeDadosScreen({ voltar }) {
+  return (
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      <VoltarButton voltar={voltar} />
+      <Text style={styles.devTitle}>Banco de Dados</Text>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>O que é um Banco de Dados?</Text>
+        <Text style={styles.courseText}>
+          Um banco de dados é uma coleção organizada de dados, podendo ser relacional (SQL) ou não relacional (NoSQL).
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Exemplos</Text>
+        <Text style={styles.courseText}>
+          <Text style={styles.bold}>Relacionais:</Text> MySQL, PostgreSQL, Oracle, SQL Server{"\n"}
+          <Text style={styles.bold}>NoSQL:</Text> MongoDB, Cassandra, Redis, Firebase
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Características</Text>
+        <Text style={styles.courseText}>
+          <Text style={styles.bold}>Relacionais:</Text>{"\n"}
+          • Estrutura em tabelas{"\n"}
+          • Suporte a transações ACID{"\n"}
+          • Uso de SQL{"\n\n"}
+          <Text style={styles.bold}>NoSQL:</Text>{"\n"}
+          • Estrutura flexível (documentos, chave-valor, grafos){"\n"}
+          • Alta escalabilidade horizontal{"\n"}
+          • Indicado para grandes volumes de dados não estruturados
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Conceitos Importantes</Text>
+        <Text style={styles.courseText}>
+          • Chave primária e estrangeira{"\n"}
+          • Normalização e desnormalização{"\n"}
+          • Índices, backups, replicação e sharding{"\n"}
+          • Segurança e controle de acesso
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Profissional e Ferramentas</Text>
+        <Text style={styles.courseText}>
+          O DBA (Administrador de Banco de Dados) é o responsável pela gestão.{"\n"}
+          Ferramentas: pgAdmin, SQL Server Management Studio, MongoDB Compass.
+        </Text>
+      </View>
+      <View style={styles.courseCard}>
+        <Text style={styles.courseTitle}>Dica</Text>
+        <Text style={styles.courseText}>
+          Escolha o banco de acordo com as necessidades do projeto, volume de dados e experiência da equipe.
+        </Text>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  voltarButton: { 
-    position: 'absolute', 
-    top: 40, // Ajustado para ficar visível 
-    left: 10, 
-    padding: 12, 
-    backgroundColor: '#7F7AC6', 
+  container: {
+    flex: 1,
+    backgroundColor: '#181c2f',
+    justifyContent: 'center',
+  },
+  formContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 30,
+    backgroundColor: '#23284d',
+    borderRadius: 16,
+    margin: 20,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+  },
+  title: {
+    fontSize: 28,
+    color: '#fff',
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#b0b8d1',
+    marginBottom: 25,
+    textAlign: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#3a4067',
     borderRadius: 8,
-    zIndex: 10 // Garante que fique acima dos outros elementos
+    padding: 12,
+    color: '#fff',
+    marginBottom: 18,
+    backgroundColor: '#23284d',
   },
-  voltarButtonText: { 
-    color: '#E0E0E0', 
-    fontWeight: 'bold', 
-    fontSize: 16 
+  button: {
+    backgroundColor: '#4f8cff',
+    padding: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+    elevation: 2,
   },
-
-  container: { flex: 1, padding: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1E1E1E' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 30, color: '#E0E0E0' },
-  input: { width: '100%', padding: 12, borderWidth: 1, borderRadius: 8, marginBottom: 20, backgroundColor: '#121212', color: '#E0E0E0' },
-  button: { backgroundColor: '#7F7AC6', padding: 12, borderRadius: 8, alignItems: 'center' },
-  buttonText: { color: '#E0E0E0', fontWeight: 'bold' },
-  linkText: { marginTop: 20, textAlign: 'center', color: '#A1EBF5' },
-  card: { backgroundColor: '#121212', padding: 20, borderRadius: 10, marginBottom: 20, width: '100%', alignItems: 'center' },
-  cardText: { fontSize: 18, color: '#E0E0E0' },
-
-  devContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' },
-  devTitle: { fontSize: 28, fontWeight: 'bold', color: '#A1EBF5', marginBottom: 10 },
-  devSubtitle: { fontSize: 18, color: '#E0E0E0', marginBottom: 20, textAlign: 'center' },
-  devButton: { backgroundColor: '#7F7AC6', padding: 15, borderRadius: 8, width: '80%', alignItems: 'center', marginBottom: 10 },
-  devButtonText: { color: '#E0E0E0', fontWeight: 'bold', fontSize: 18 },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  linkText: {
+    marginTop: 18,
+    color: '#b0b8d1',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
+  voltarButton: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#23284d',
+    paddingVertical: 6,
+    paddingHorizontal: 18,
+    borderRadius: 20,
+    marginBottom: 10,
+    marginLeft: -10,
+    marginTop: 5,
+    elevation: 2,
+  },
+  voltarButtonText: {
+    color: '#4f8cff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  devContainer: {
+    flex: 1,
+    padding: 24,
+    alignItems: 'center',
+    backgroundColor: '#23284d',
+  },
+  devTitle: {
+    fontSize: 26,
+    color: '#fff',
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  devSubtitle: {
+    fontSize: 16,
+    color: '#b0b8d1',
+    marginBottom: 18,
+    textAlign: 'center',
+  },
+  card: {
+    backgroundColor: '#2d325a',
+    padding: 18,
+    borderRadius: 14,
+    marginVertical: 10,
+    width: '100%',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+  },
+  cardTitle: {
+    color: '#4f8cff',
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginBottom: 6,
+  },
+  cardDesc: {
+    color: '#b0b8d1',
+    fontSize: 15,
+  },
+  scrollContent: {
+    padding: 20,
+    backgroundColor: '#23284d',
+    minHeight: '100%',
+  },
+  courseCard: {
+    backgroundColor: '#2d325a',
+    borderRadius: 14,
+    padding: 18,
+    marginBottom: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+  },
+  courseTitle: {
+    color: '#4f8cff',
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 6,
+  },
+  courseText: {
+    color: '#e0e6f7',
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  bold: {
+    fontWeight: 'bold',
+    color: '#fff',
+  },
 });
