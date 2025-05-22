@@ -1,3 +1,4 @@
+// Este codigo é nosso app sobre desenvovimento e softkills
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
